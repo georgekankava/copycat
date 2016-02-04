@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
  */
 abstract class ActiveState extends PassiveState {
 
+  private static final String APPENDED_TO_LOG_AT_INDEX = "{} - Appended {} to log at index {}";
+
   protected ActiveState(ServerContext context) {
     super(context);
   }
@@ -107,7 +109,7 @@ abstract class ActiveState extends PassiveState {
         // If the entry index is greater than the last log index, skip missing entries.
         if (context.getLog().lastIndex() < entry.getIndex()) {
           context.getLog().skip(entry.getIndex() - context.getLog().lastIndex() - 1).append(entry);
-          LOGGER.debug("{} - Appended {} to log at index {}", context.getCluster().member().address(), entry, entry.getIndex());
+          LOGGER.debug(APPENDED_TO_LOG_AT_INDEX, context.getCluster().member().address(), entry, entry.getIndex());
         } else if (context.getCommitIndex() >= entry.getIndex()) {
           continue;
         } else {
@@ -119,11 +121,11 @@ abstract class ActiveState extends PassiveState {
               // If appending to the log fails, apply commits and reply false to the append request.
               LOGGER.debug("{} - Appended entry term does not match local log, removing incorrect entries", context.getCluster().member().address());
               context.getLog().truncate(entry.getIndex() - 1).append(entry);
-              LOGGER.debug("{} - Appended {} to log at index {}", context.getCluster().member().address(), entry, entry.getIndex());
+              LOGGER.debug(APPENDED_TO_LOG_AT_INDEX, context.getCluster().member().address(), entry, entry.getIndex());
             }
           } else {
             context.getLog().truncate(entry.getIndex() - 1).append(entry);
-            LOGGER.debug("{} - Appended {} to log at index {}", context.getCluster().member().address(), entry, entry.getIndex());
+            LOGGER.debug(APPENDED_TO_LOG_AT_INDEX, context.getCluster().member().address(), entry, entry.getIndex());
           }
         }
 

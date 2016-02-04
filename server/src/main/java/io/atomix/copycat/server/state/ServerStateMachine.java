@@ -44,6 +44,8 @@ import java.util.concurrent.CompletableFuture;
  * @author <a href="http://github.com/kuujo>Jordan Halterman</a>
  */
 final class ServerStateMachine implements AutoCloseable {
+  private static final String UNKNOWN_SESSION = "Unknown session: ";
+  private static final String LOG_CLOSED = "log closed";
   private static final Logger LOGGER = LoggerFactory.getLogger(ServerStateMachine.class);
   private final StateMachine stateMachine;
   private final ServerContext state;
@@ -338,7 +340,7 @@ final class ServerStateMachine implements AutoCloseable {
     } else if (entry instanceof ConfigurationEntry) {
       return apply((ConfigurationEntry) entry);
     }
-    return Futures.exceptionalFuture(new InternalException("unknown state machine operation"));
+    return Futures.exceptionalFuture(new InternalException(UNKNOWN_SESSION));
   }
 
   /**
@@ -427,7 +429,7 @@ final class ServerStateMachine implements AutoCloseable {
     CompletableFuture<Long> future = new ComposableFuture<>();
     executor.executor().execute(() -> {
       if (!state.getLog().isOpen()) {
-        future.completeExceptionally(new IllegalStateException("log closed"));
+        future.completeExceptionally(new IllegalStateException(LOG_CLOSED));
         return;
       }
 
@@ -505,8 +507,8 @@ final class ServerStateMachine implements AutoCloseable {
 
     // If the server session is null, the session either never existed or already expired.
     if (session == null) {
-      LOGGER.warn("Unknown session: " + entry.getSession());
-      future = Futures.exceptionalFuture(new UnknownSessionException("unknown session: " + entry.getSession()));
+      LOGGER.warn(UNKNOWN_SESSION + entry.getSession());
+      future = Futures.exceptionalFuture(new UnknownSessionException(UNKNOWN_SESSION + entry.getSession()));
     }
     // If the session exists, don't allow it to expire even if its expiration has passed since we still
     // managed to receive a keep alive request from the client before it was removed. This allows the
@@ -538,7 +540,7 @@ final class ServerStateMachine implements AutoCloseable {
       // Remove responses and clear/resend events in the state machine thread to prevent thread safety issues.
       executor.executor().execute(() -> {
         if (!state.getLog().isOpen()) {
-          future.completeExceptionally(new IllegalStateException("log closed"));
+          future.completeExceptionally(new IllegalStateException(LOG_CLOSED));
           return;
         }
 
@@ -617,8 +619,8 @@ final class ServerStateMachine implements AutoCloseable {
 
     // If the server session is null, the session either never existed or already expired.
     if (session == null) {
-      LOGGER.warn("Unknown session: " + entry.getSession());
-      future = Futures.exceptionalFuture(new UnknownSessionException("unknown session: " + entry.getSession()));
+      LOGGER.warn(UNKNOWN_SESSION + entry.getSession());
+      future = Futures.exceptionalFuture(new UnknownSessionException(UNKNOWN_SESSION + entry.getSession()));
     }
     // If the session exists, don't allow it to expire even if its expiration has passed since we still
     // managed to receive a keep alive request from the client before it was removed.
@@ -633,7 +635,7 @@ final class ServerStateMachine implements AutoCloseable {
       if (entry.isExpired()) {
         executor.executor().execute(() -> {
           if (!state.getLog().isOpen()) {
-            future.completeExceptionally(new IllegalStateException("log closed"));
+            future.completeExceptionally(new IllegalStateException(LOG_CLOSED));
             return;
           }
 
@@ -675,7 +677,7 @@ final class ServerStateMachine implements AutoCloseable {
       else {
         executor.executor().execute(() -> {
           if (!state.getLog().isOpen()) {
-            future.completeExceptionally(new IllegalStateException("log closed"));
+            future.completeExceptionally(new IllegalStateException(LOG_CLOSED));
             return;
           }
 
@@ -760,8 +762,8 @@ final class ServerStateMachine implements AutoCloseable {
     // If the session is null then that indicates that the session already timed out or it never existed.
     // Return with an UnknownSessionException.
     if (session == null) {
-      LOGGER.warn("Unknown session: " + entry.getSession());
-      future.completeExceptionally(new UnknownSessionException("unknown session: " + entry.getSession()));
+      LOGGER.warn(UNKNOWN_SESSION + entry.getSession());
+      future.completeExceptionally(new UnknownSessionException(UNKNOWN_SESSION + entry.getSession()));
     }
     // If the command's sequence number is less than the next session sequence number then that indicates that
     // we've received a command that was previously applied to the state machine. Ensure linearizability by
@@ -778,7 +780,7 @@ final class ServerStateMachine implements AutoCloseable {
       // Switch to the state machine thread and get the existing response.
       executor.executor().execute(() -> {
         if (!state.getLog().isOpen()) {
-          future.completeExceptionally(new IllegalStateException("log closed"));
+          future.completeExceptionally(new IllegalStateException(LOG_CLOSED));
           return;
         }
 
@@ -851,7 +853,7 @@ final class ServerStateMachine implements AutoCloseable {
     ServerCommit commit = commits.acquire(entry, timestamp);
     executor.executor().execute(() -> {
       if (!state.getLog().isOpen()) {
-        future.completeExceptionally(new IllegalStateException("log closed"));
+        future.completeExceptionally(new IllegalStateException(LOG_CLOSED));
         return;
       }
 
@@ -916,8 +918,8 @@ final class ServerStateMachine implements AutoCloseable {
     // If the session is null then that indicates that the session already timed out or it never existed.
     // Return with an UnknownSessionException.
     if (session == null) {
-      LOGGER.warn("Unknown session: " + entry.getSession());
-      return Futures.exceptionalFuture(new UnknownSessionException("unknown session " + entry.getSession()));
+      LOGGER.warn(UNKNOWN_SESSION + entry.getSession());
+      return Futures.exceptionalFuture(new UnknownSessionException(UNKNOWN_SESSION + entry.getSession()));
     }
     // Query execution is determined by the sequence and index supplied for the query. All queries are queued until the state
     // machine advances at least until the provided sequence and index.
@@ -971,7 +973,7 @@ final class ServerStateMachine implements AutoCloseable {
   private CompletableFuture<Object> executeQuery(ServerCommit commit, CompletableFuture<Object> future, ThreadContext context) {
     executor.executor().execute(() -> {
       if (!state.getLog().isOpen()) {
-        future.completeExceptionally(new IllegalStateException("log closed"));
+        future.completeExceptionally(new IllegalStateException(LOG_CLOSED));
         return;
       }
 

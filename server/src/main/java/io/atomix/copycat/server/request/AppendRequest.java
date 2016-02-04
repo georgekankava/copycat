@@ -194,6 +194,8 @@ public class AppendRequest extends AbstractRequest {
    * Append request builder.
    */
   public static class Builder extends AbstractRequest.Builder<Builder, AppendRequest> {
+    private static final String TERM_MUST_BE_POSITIVE = "term must be positive";
+
     protected Builder(AppendRequest request) {
       super(request);
     }
@@ -206,7 +208,7 @@ public class AppendRequest extends AbstractRequest {
      * @throws IllegalArgumentException if the {@code term} is not positive
      */
     public Builder withTerm(long term) {
-      request.term = Assert.arg(term, term > 0, "term must be positive");
+      request.term = Assert.arg(term, term > 0, TERM_MUST_BE_POSITIVE);
       return this;
     }
 
@@ -242,7 +244,7 @@ public class AppendRequest extends AbstractRequest {
      * @throws IllegalArgumentException if the {@code term} is not positive
      */
     public Builder withLogTerm(long term) {
-      request.logTerm = Assert.argNot(term, term < 0, "term must be positive");
+      request.logTerm = Assert.argNot(term, term < 0, TERM_MUST_BE_POSITIVE);
       return this;
     }
 
@@ -313,7 +315,7 @@ public class AppendRequest extends AbstractRequest {
     @Override
     public AppendRequest build() {
       super.build();
-      Assert.stateNot(request.term <= 0, "term must be positive");
+      Assert.stateNot(request.term <= 0, TERM_MUST_BE_POSITIVE);
       Assert.stateNot(request.logIndex < 0, "log index must not be negative");
       if (request.logIndex > 0) {
         Assert.stateNot(request.logTerm == 0, "log term must be specified");

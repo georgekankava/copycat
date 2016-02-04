@@ -40,6 +40,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * @author <a href="http://github.com/kuujo">Jordan Halterman</a>
  */
 public class SegmentManager implements AutoCloseable {
+  private static final String CREATED_SEGMENT = "Created segment: {}";
   private static final Logger LOGGER = LoggerFactory.getLogger(SegmentManager.class);
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 1024;
   
@@ -303,7 +304,7 @@ public class SegmentManager implements AutoCloseable {
     Buffer buffer = FileBuffer.allocate(segmentFile, Math.min(DEFAULT_BUFFER_SIZE, descriptor.maxSegmentSize()), Integer.MAX_VALUE);
     descriptor.copyTo(buffer);
     Segment segment = new Segment(buffer.slice(), descriptor, createIndex(descriptor), new OffsetCleaner(), serializer.clone(), this);
-    LOGGER.debug("Created segment: {}", segment);
+    LOGGER.debug(CREATED_SEGMENT, segment);
     return segment;
   }
 
@@ -315,7 +316,7 @@ public class SegmentManager implements AutoCloseable {
     Buffer buffer = MappedBuffer.allocate(segmentFile, Math.min(DEFAULT_BUFFER_SIZE, descriptor.maxSegmentSize()), Integer.MAX_VALUE);
     descriptor.copyTo(buffer);
     Segment segment = new Segment(buffer.slice(), descriptor, createIndex(descriptor), new OffsetCleaner(), serializer.clone(), this);
-    LOGGER.debug("Created segment: {}", segment);
+    LOGGER.debug(CREATED_SEGMENT, segment);
     return segment;
   }
 
@@ -326,7 +327,7 @@ public class SegmentManager implements AutoCloseable {
     Buffer buffer = HeapBuffer.allocate(Math.min(DEFAULT_BUFFER_SIZE, descriptor.maxSegmentSize()), Integer.MAX_VALUE);
     descriptor.copyTo(buffer);
     Segment segment = new Segment(buffer.slice(), descriptor, createIndex(descriptor), new OffsetCleaner(), serializer.clone(), this);
-    LOGGER.debug("Created segment: {}", segment);
+    LOGGER.debug(CREATED_SEGMENT, segment);
     return segment;
   }
 

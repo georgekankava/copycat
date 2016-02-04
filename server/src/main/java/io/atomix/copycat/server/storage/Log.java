@@ -114,6 +114,7 @@ import java.util.concurrent.Executors;
  * @author <a href="http://github.com/kuujo">Jordan Halterman</a>
  */
 public class Log implements AutoCloseable {
+  private static final String INVALID_INDEX = "invalid index: ";
   final SegmentManager segments;
   private final Compactor compactor;
   private final TypedEntryPool entryPool = new TypedEntryPool();
@@ -306,7 +307,7 @@ public class Log implements AutoCloseable {
     assertValidIndex(index);
 
     Segment segment = segments.segment(index);
-    Assert.index(segment != null, "invalid index: " + index);
+    Assert.index(segment != null, INVALID_INDEX + index);
 
     return segment.term(index);
   }
@@ -337,7 +338,7 @@ public class Log implements AutoCloseable {
     assertValidIndex(index);
 
     Segment segment = segments.segment(index);
-    Assert.index(segment != null, "invalid index: " + index);
+    Assert.index(segment != null, INVALID_INDEX + index);
 
     // Get the entry from the segment. If the entry hasn't already been compacted from the segment,
     // it will be non-null.
@@ -431,7 +432,7 @@ public class Log implements AutoCloseable {
     assertValidIndex(index);
 
     Segment segment = segments.segment(index);
-    Assert.index(segment != null, "invalid index: " + index);
+    Assert.index(segment != null, INVALID_INDEX + index);
     segment.clean(index);
     return this;
   }

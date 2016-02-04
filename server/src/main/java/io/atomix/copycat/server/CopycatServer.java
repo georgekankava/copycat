@@ -657,6 +657,7 @@ public class CopycatServer implements Managed<CopycatServer> {
    * Raft server builder.
    */
   public static class Builder extends io.atomix.catalyst.util.Builder<CopycatServer> {
+    private static final String TRANSPORT = "transport";
     private static final String DEFAULT_NAME = "copycat";
     private static final Duration DEFAULT_ELECTION_TIMEOUT = Duration.ofMillis(750);
     private static final Duration DEFAULT_HEARTBEAT_INTERVAL = Duration.ofMillis(250);
@@ -715,7 +716,7 @@ public class CopycatServer implements Managed<CopycatServer> {
      * @throws NullPointerException if {@code transport} is null
      */
     public Builder withTransport(Transport transport) {
-      Assert.notNull(transport, "transport");
+      Assert.notNull(transport, TRANSPORT);
       this.clientTransport = transport;
       this.serverTransport = transport;
       return this;
@@ -729,7 +730,7 @@ public class CopycatServer implements Managed<CopycatServer> {
      * @throws NullPointerException if {@code transport} is null
      */
     public Builder withClientTransport(Transport transport) {
-      this.clientTransport = Assert.notNull(transport, "transport");
+      this.clientTransport = Assert.notNull(transport, TRANSPORT);
       return this;
     }
 
@@ -741,7 +742,7 @@ public class CopycatServer implements Managed<CopycatServer> {
      * @throws NullPointerException if {@code transport} is null
      */
     public Builder withServerTransport(Transport transport) {
-      this.serverTransport = Assert.notNull(transport, "transport");
+      this.serverTransport = Assert.notNull(transport, TRANSPORT);
       return this;
     }
 

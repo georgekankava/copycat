@@ -21,26 +21,27 @@ package io.atomix.copycat.client.error;
  * @author <a href="http://github.com/kuujo">Jordan Halterman</a>
  */
 public class RaftException extends RuntimeException {
+  private static final String TYPE_CANNOT_BE_NULL = "type cannot be null";
   private final RaftError.Type type;
 
   public RaftException(RaftError.Type type, String message, Object... args) {
     super(String.format(message, args));
     if (type == null)
-      throw new NullPointerException("type cannot be null");
+      throw new NullPointerException(TYPE_CANNOT_BE_NULL);
     this.type = type;
   }
 
   public RaftException(RaftError.Type type, Throwable cause, String message, Object... args) {
     super(String.format(message, args), cause);
     if (type == null)
-      throw new NullPointerException("type cannot be null");
+      throw new NullPointerException(TYPE_CANNOT_BE_NULL);
     this.type = type;
   }
 
   public RaftException(RaftError.Type type, Throwable cause) {
     super(cause);
     if (type == null)
-      throw new NullPointerException("type cannot be null");
+      throw new NullPointerException(TYPE_CANNOT_BE_NULL);
     this.type = type;
   }
 

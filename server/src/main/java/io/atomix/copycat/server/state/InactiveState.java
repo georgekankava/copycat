@@ -33,6 +33,8 @@ import java.util.concurrent.CompletableFuture;
  */
 class InactiveState extends AbstractState {
 
+  private static final String INACTIVE_STATE = "inactive state";
+
   public InactiveState(ServerContext context) {
     super(context);
   }
@@ -68,77 +70,77 @@ class InactiveState extends AbstractState {
 
   @Override
   protected CompletableFuture<RegisterResponse> register(RegisterRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<ConnectResponse> connect(ConnectRequest request, Connection connection) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<AcceptResponse> accept(AcceptRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<KeepAliveResponse> keepAlive(KeepAliveRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<UnregisterResponse> unregister(UnregisterRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<PublishResponse> publish(PublishRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<InstallResponse> install(InstallRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<JoinResponse> join(JoinRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<ReconfigureResponse> reconfigure(ReconfigureRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<LeaveResponse> leave(LeaveRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<AppendResponse> append(AppendRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<PollResponse> poll(PollRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<VoteResponse> vote(VoteRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<CommandResponse> command(CommandRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
   @Override
   protected CompletableFuture<QueryResponse> query(QueryRequest request) {
-    return Futures.exceptionalFuture(new IllegalStateException("inactive state"));
+    return Futures.exceptionalFuture(new IllegalStateException(INACTIVE_STATE));
   }
 
 }

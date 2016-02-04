@@ -49,6 +49,9 @@ import java.time.Duration;
  */
 public class Storage {
 
+  private static final String DIRECTORY = "directory";
+  private static final String STORAGE_LEVEL = "storageLevel";
+
   /**
    * Returns a new storage builder.
    *
@@ -83,14 +86,14 @@ public class Storage {
   }
 
   public Storage(StorageLevel storageLevel) {
-    this.storageLevel = Assert.notNull(storageLevel, "storageLevel");
+    this.storageLevel = Assert.notNull(storageLevel, STORAGE_LEVEL);
   }
 
   /**
    * @throws NullPointerException if {@code directory} is null
    */
   public Storage(String directory) {
-    this(new File(Assert.notNull(directory, "directory")));
+    this(new File(Assert.notNull(directory, DIRECTORY)));
   }
 
   /**
@@ -104,15 +107,15 @@ public class Storage {
    * @throws NullPointerException if {@code directory} is null
    */
   public Storage(String directory, StorageLevel storageLevel) {
-    this(new File(Assert.notNull(directory, "directory")), storageLevel);
+    this(new File(Assert.notNull(directory, DIRECTORY)), storageLevel);
   }
 
   /**
    * @throws NullPointerException if {@code directory} is null
    */
   public Storage(File directory, StorageLevel storageLevel) {
-    this.directory = Assert.notNull(directory, "directory");
-    this.storageLevel = Assert.notNull(storageLevel, "storageLevel");
+    this.directory = Assert.notNull(directory, DIRECTORY);
+    this.storageLevel = Assert.notNull(storageLevel, STORAGE_LEVEL);
   }
 
   /**
@@ -308,7 +311,7 @@ public class Storage {
      * @return The storage builder.
      */
     public Builder withStorageLevel(StorageLevel storageLevel) {
-      storage.storageLevel = Assert.notNull(storageLevel, "storageLevel");
+      storage.storageLevel = Assert.notNull(storageLevel, STORAGE_LEVEL);
       return this;
     }
 
@@ -323,7 +326,7 @@ public class Storage {
      * @throws NullPointerException If the {@code directory} is {@code null}
      */
     public Builder withDirectory(String directory) {
-      return withDirectory(new File(Assert.notNull(directory, "directory")));
+      return withDirectory(new File(Assert.notNull(directory, DIRECTORY)));
     }
 
     /**
@@ -337,7 +340,7 @@ public class Storage {
      * @throws NullPointerException If the {@code directory} is {@code null}
      */
     public Builder withDirectory(File directory) {
-      storage.directory = Assert.notNull(directory, "directory");
+      storage.directory = Assert.notNull(directory, DIRECTORY);
       return this;
     }
 

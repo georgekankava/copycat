@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
  * @author <a href="http://github.com/kuujo">Jordan Halterman</a>
  */
 final class LeaderState extends ActiveState {
+  private static final String APPENDED = "{} - Appended {}";
   private final LeaderAppender appender;
   private Scheduled appendTimer;
   private long configuring;
@@ -93,7 +94,7 @@ final class LeaderState extends ActiveState {
       entry.setTerm(term)
         .setTimestamp(appender.time());
       assert context.getLog().append(entry) == appender.index();
-      LOGGER.debug("{} - Appended {}", context.getCluster().member().address(), entry);
+      LOGGER.debug(APPENDED, context.getCluster().member().address(), entry);
     }
 
     // Append a configuration entry to propagate the leader's cluster configuration.
@@ -174,7 +175,7 @@ final class LeaderState extends ActiveState {
             .setExpired(true)
             .setTimestamp(System.currentTimeMillis());
           index = context.getLog().append(entry);
-          LOGGER.debug("{} - Appended {}", context.getCluster().member().address(), entry);
+          LOGGER.debug(APPENDED, context.getCluster().member().address(), entry);
         }
 
         // Commit the unregister entry and apply it to the state machine.
@@ -673,7 +674,7 @@ final class LeaderState extends ActiveState {
         .setClient(request.client())
         .setTimeout(timeout);
       index = context.getLog().append(entry);
-      LOGGER.debug("{} - Appended {}", context.getCluster().member().address(), entry);
+      LOGGER.debug(APPENDED, context.getCluster().member().address(), entry);
     }
 
     CompletableFuture<RegisterResponse> future = new CompletableFuture<>();
@@ -760,7 +761,7 @@ final class LeaderState extends ActiveState {
         .setTimestamp(timestamp)
         .setAddress(request.address());
       index = context.getLog().append(entry);
-      LOGGER.debug("{} - Appended {}", context.getCluster().member().address(), entry);
+      LOGGER.debug(APPENDED, context.getCluster().member().address(), entry);
     }
 
     context.getStateMachine().executor().context().sessions().registerAddress(request.client(), request.address());
@@ -821,7 +822,7 @@ final class LeaderState extends ActiveState {
         .setEventIndex(request.eventIndex())
         .setTimestamp(timestamp);
       index = context.getLog().append(entry);
-      LOGGER.debug("{} - Appended {}", context.getCluster().member().address(), entry);
+      LOGGER.debug(APPENDED, context.getCluster().member().address(), entry);
     }
 
     CompletableFuture<KeepAliveResponse> future = new CompletableFuture<>();
@@ -887,7 +888,7 @@ final class LeaderState extends ActiveState {
         .setExpired(false)
         .setTimestamp(timestamp);
       index = context.getLog().append(entry);
-      LOGGER.debug("{} - Appended {}", context.getCluster().member().address(), entry);
+      LOGGER.debug(APPENDED, context.getCluster().member().address(), entry);
     }
 
     CompletableFuture<UnregisterResponse> future = new CompletableFuture<>();

@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
  * @author <a href="http://github.com/kuujo">Jordan Halterman</a>
  */
 final class ClusterState implements Cluster, AutoCloseable {
+  private static final String FAILED_TO_JOIN = "{} - Failed to join {}";
   private static final Logger LOGGER = LoggerFactory.getLogger(ClusterState.class);
   private final ServerContext context;
   private final ServerMember member;
@@ -382,15 +383,15 @@ final class ClusterState implements Cluster, AutoCloseable {
             // If the response error is null, that indicates that no error occurred but the leader was
             // in a state that was incapable of handling the join request. Attempt to join the leader
             // again after an election timeout.
-            LOGGER.debug("{} - Failed to join {}", member().address(), member.getMember().address());
+            LOGGER.debug(FAILED_TO_JOIN, member().address(), member.getMember().address());
             resetJoinTimer();
           } else {
             // If the response error was non-null, attempt to join via the next server in the members list.
-            LOGGER.debug("{} - Failed to join {}", member().address(), member.getMember().address());
+            LOGGER.debug(FAILED_TO_JOIN, member().address(), member.getMember().address());
             join(iterator);
           }
         } else {
-          LOGGER.debug("{} - Failed to join {}", member().address(), member.getMember().address());
+          LOGGER.debug(FAILED_TO_JOIN, member().address(), member.getMember().address());
           join(iterator);
         }
       });

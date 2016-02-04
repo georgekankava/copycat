@@ -44,6 +44,7 @@ import java.util.function.Supplier;
  * @author <a href="http://github.com/kuujo>Jordan Halterman</a>
  */
 class ServerStateMachineExecutor implements StateMachineExecutor {
+  private static final String CALLBACKS_SCHEDULED_DURING_EXECUTION = "callbacks can only be scheduled during command execution";
   private static final Logger LOGGER = LoggerFactory.getLogger(ServerStateMachineExecutor.class);
   private final ThreadContext executor;
   private final ServerStateMachineContext context;
@@ -204,7 +205,7 @@ class ServerStateMachineExecutor implements StateMachineExecutor {
 
   @Override
   public <T> CompletableFuture<T> execute(Supplier<T> callback) {
-    Assert.state(context.consistency() != null, "callbacks can only be scheduled during command execution");
+    Assert.state(context.consistency() != null, CALLBACKS_SCHEDULED_DURING_EXECUTION);
     CompletableFuture<T> future = new CompletableFuture<>();
     tasks.add(new ServerTask(callback, future));
     return future;
@@ -212,14 +213,14 @@ class ServerStateMachineExecutor implements StateMachineExecutor {
 
   @Override
   public Scheduled schedule(Duration delay, Runnable callback) {
-    Assert.state(context.consistency() != null, "callbacks can only be scheduled during command execution");
+    Assert.state(context.consistency() != null, CALLBACKS_SCHEDULED_DURING_EXECUTION);
     LOGGER.debug("Scheduled callback {} with delay {}", callback, delay);
     return new ServerScheduledTask(callback, delay.toMillis()).schedule();
   }
 
   @Override
   public Scheduled schedule(Duration initialDelay, Duration interval, Runnable callback) {
-    Assert.state(context.consistency() != null, "callbacks can only be scheduled during command execution");
+    Assert.state(context.consistency() != null, CALLBACKS_SCHEDULED_DURING_EXECUTION);
     LOGGER.debug("Scheduled repeating callback {} with initial delay {} and interval {}", callback, initialDelay, interval);
     return new ServerScheduledTask(callback, initialDelay.toMillis(), interval.toMillis()).schedule();
   }

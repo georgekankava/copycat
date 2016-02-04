@@ -47,6 +47,7 @@ import java.util.function.Function;
  * @author <a href="http://github.com/kuujo>Jordan Halterman</a>
  */
 public class DefaultCopycatClient implements CopycatClient {
+  private static final String SESSION_CLOSED = "session closed";
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCopycatClient.class);
   private final Transport transport;
   private final CatalystThreadFactory threadFactory;
@@ -189,7 +190,7 @@ public class DefaultCopycatClient implements CopycatClient {
   @Override
   public <T> CompletableFuture<T> submit(Command<T> command) {
     if (session == null)
-      return Futures.exceptionalFuture(new ClosedSessionException("session closed"));
+      return Futures.exceptionalFuture(new ClosedSessionException(SESSION_CLOSED));
 
     OperationFuture<T> future = new OperationFuture<>(command);
     context.executor().execute(() -> submit(command, session::submit, future));
@@ -199,7 +200,7 @@ public class DefaultCopycatClient implements CopycatClient {
   @Override
   public <T> CompletableFuture<T> submit(Query<T> query) {
     if (session == null)
-      return Futures.exceptionalFuture(new ClosedSessionException("session closed"));
+      return Futures.exceptionalFuture(new ClosedSessionException(SESSION_CLOSED));
 
     OperationFuture<T> future = new OperationFuture<>(query);
     context.executor().execute(() -> submit(query, session::submit, future));
@@ -290,7 +291,7 @@ public class DefaultCopycatClient implements CopycatClient {
       session.close().whenCompleteAsync((result, error) -> {
         setState(State.CLOSED);
         for (Map.Entry<Long, OperationFuture<?>> entry : operations.entrySet()) {
-          entry.getValue().completeExceptionally(new ClosedSessionException("session closed"));
+          entry.getValue().completeExceptionally(new ClosedSessionException(SESSION_CLOSED));
         }
 
         CompletableFuture.runAsync(() -> {
